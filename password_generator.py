@@ -7,7 +7,7 @@ import random
 #password generator
 def ps_generator():
     password_length = random.randint(9,17)
-    letters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','ñ','o','p','q','r','s','t','u','v','w','x','y','z']
+    letters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
     numbers = ['0','1','2','3','4','5','6','7','8','9']
 
     #convert to uppercase
@@ -45,6 +45,7 @@ def ps_generator():
 
 #menu
 print('\nWELCOME')
+
 def menu():
     option = (input('''\nChoise your option:
              1. Generate password
@@ -56,28 +57,40 @@ user_option=menu()
 
 #option1
 def generator():
-    user_passwords = {}
+    user_passwords = ''
     app = input('\nEnter app name: ')
     passw = ps_generator()
-    user_passwords[app] = passw
     print(f'Your new password for {app} is {passw}')
-    return(user_passwords)
+    return(app+' '+passw+'\n')
 
 #option2
-def get(dicc_ps):
-    app = input('Enter app name: ')
-    if app in dicc_ps:
-        passw=dicc_ps.get(app)
-        print(f'Your password for {app} was {passw}')
+def get(list_pass):
+    app = input('\nEnter app name: ')
+    if app in list_pass:
+        position_app=list_pass.index(app)
+        passw=list_pass[position_app+1]
+        print(f'Your password for {app} is {passw}')
     else:
-        print(f'Your don´t have password for {app} yet')
+        print(f'You don´t have password for {app} yet')
 
-list_ps={}
+#create txt
+def extern_file(app_password):
+    with open('pass_file.txt', "a") as file:
+        file.write(str(app_password))
+
+#read results
+def read_file():
+    with open('pass_file.txt', 'r') as file:
+        ps_list=file.read().split()
+    return (ps_list)
+
+
+
 while user_option!='3':
-    if user_option=='1' :
-        list_ps.update(generator())
+    if user_option=='1':
+        extern_file(generator())
     elif user_option=='2':
-        get(list_ps)
+        get(read_file())
     else:
         print('Invalid option, try again.')
     user_option=menu()
