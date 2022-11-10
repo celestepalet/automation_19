@@ -45,7 +45,6 @@ def ps_generator():
 
 #menu
 print('\nWELCOME')
-
 def menu():
     option = (input('''\nChoise your option:
              1. Generate password
@@ -56,22 +55,34 @@ def menu():
 user_option=menu()
 
 #option1
-def generator():
+def generator(app):
     user_passwords = ''
-    app = input('\nEnter app name: ')
     passw = ps_generator()
     print(f'Your new password for {app} is {passw}')
     return(app+' '+passw+'\n')
 
 #option2
-def get(list_pass):
-    app = input('\nEnter app name: ')
+def get(list_pass,app,x):
     if app in list_pass:
         position_app=list_pass.index(app)
         passw=list_pass[position_app+1]
-        print(f'Your password for {app} is {passw}')
+        if x==1:
+            print(f'Your password for {app} is {passw}')
     else:
         print(f'You don´t have password for {app} yet')
+        passw=''
+    return passw
+
+#option yes
+def replace(app, old_pass):
+    with open('pass_file.txt', 'r+') as file:
+        ps_list=file.readlines()
+        old_info=app+' '+old_pass+'\n'
+        position_line = ps_list.index(old_info)
+        ps_list[position_line]=generator(app)
+        file.seek(0)   #lleva el cursor al punto 0 del txt
+        file.writelines(ps_list)
+    return (ps_list)
 
 #create txt
 def extern_file(app_password):
@@ -84,13 +95,29 @@ def read_file():
         ps_list=file.read().split()
     return (ps_list)
 
-
-
+extern_file('')
 while user_option!='3':
     if user_option=='1':
-        extern_file(generator())
+        app_name = input('\nEnter app name: ')
+        pass_list = read_file()
+        if app_name in pass_list:
+            print(f'You already have a password for {app_name}')
+            choise=input('Do you want to replace it? (y/n): ')
+            while choise.lower()!='n' and choise.lower()!='y':
+                choise=input('Invalid character, please enter "y" or "n": ')
+            if choise.lower()=='n':
+                x=1
+                get(read_file(), app_name,x)
+            else:
+                x=2
+                old_passw=get(read_file(), app_name, x)
+                replace(app_name, old_passw)
+        else:
+            extern_file(generator(app_name))
     elif user_option=='2':
-        get(read_file())
+        x=1
+        app_name = input('\nEnter app name: ')
+        get(read_file(), app_name,x)
     else:
         print('Invalid option, try again.')
     user_option=menu()
