@@ -82,6 +82,7 @@ def replace(app, old_pass):
         ps_list[position_line]=generator(app)
         file.seek(0)   #lleva el cursor al punto 0 del txt
         file.writelines(ps_list)
+        
     return (ps_list)
 
 #create txt
@@ -98,13 +99,13 @@ def read_file():
 extern_file('')
 while user_option!='3':
     if user_option=='1':
-        app_name = input('\nEnter app name: ')
+        app_name = input('\nEnter app name: ').lower()
         pass_list = read_file()
         if app_name in pass_list:
             print(f'You already have a password for {app_name}')
-            choise=input('Do you want to replace it? (y/n): ')
-            while choise.lower()!='n' and choise.lower()!='y':
-                choise=input('Invalid character, please enter "y" or "n": ')
+            choise=input('Do you want to replace it? (y/n): ').lower()
+            while choise!='n' and choise!='y':
+                choise=input('Invalid character, please enter "y" or "n": ').lower()
             if choise.lower()=='n':
                 x=1
                 get(read_file(), app_name,x)
@@ -116,7 +117,7 @@ while user_option!='3':
             extern_file(generator(app_name))
     elif user_option=='2':
         x=1
-        app_name = input('\nEnter app name: ')
+        app_name = input('\nEnter app name: ').lower()
         get(read_file(), app_name,x)
     else:
         print('Invalid option, try again.')
