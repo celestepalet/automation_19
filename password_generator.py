@@ -6,7 +6,7 @@ import random
 
 #password generator
 def ps_generator():
-    password_length = random.randint(9,17)
+    password_length = random.randint(9,16)
     letters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
     numbers = ['0','1','2','3','4','5','6','7','8','9']
 
@@ -45,6 +45,7 @@ def ps_generator():
 
 #menu
 print('\nWELCOME')
+
 def menu():
     option = (input('''\nChoise your option:
              1. Generate password
@@ -55,18 +56,19 @@ def menu():
 user_option=menu()
 
 #option1
-def generator(app):
+def generator(app,option):
     user_passwords = ''
     passw = ps_generator()
-    print(f'Your new password for {app} is {passw}')
+    if option==1:
+        print(f'Your new password for {app} is {passw}')
     return(app+' '+passw+'\n')
 
 #option2
-def get(list_pass,app,x):
+def get(list_pass,app,option):
     if app in list_pass:
         position_app=list_pass.index(app)
         passw=list_pass[position_app+1]
-        if x==1:
+        if option==1:
             print(f'Your password for {app} is {passw}')
     else:
         print(f'You don´t have password for {app} yet')
@@ -76,13 +78,17 @@ def get(list_pass,app,x):
 #option yes
 def replace(app, old_pass):
     with open('pass_file.txt', 'r+') as file:
-        ps_list=file.readlines()
+        ps_list = file.readlines()
         old_info=app+' '+old_pass+'\n'
         position_line = ps_list.index(old_info)
-        ps_list[position_line]=generator(app)
-        file.seek(0)   #lleva el cursor al punto 0 del txt
+        new_info=generator(app,2)
+        while len(old_info)!=len(new_info):
+            new_info = generator(app,2)
+        ps_list[position_line]=new_info
+        file.seek(0)   #lleva al cursor al punto 0 del txt
         file.writelines(ps_list)
-        
+        new_info_ls=new_info.split()
+        print(f'Your new password for {new_info_ls[0]} is {new_info_ls[1]}')
     return (ps_list)
 
 #create txt
@@ -106,15 +112,13 @@ while user_option!='3':
             choise=input('Do you want to replace it? (y/n): ').lower()
             while choise!='n' and choise!='y':
                 choise=input('Invalid character, please enter "y" or "n": ').lower()
-            if choise.lower()=='n':
-                x=1
-                get(read_file(), app_name,x)
+            if choise=='n':
+                get(read_file(), app_name,1)
             else:
-                x=2
-                old_passw=get(read_file(), app_name, x)
-                replace(app_name, old_passw)
+                old_passw=get(pass_list, app_name,2)
+                replace(app_name,old_passw)
         else:
-            extern_file(generator(app_name))
+            extern_file(generator(app_name,1))
     elif user_option=='2':
         x=1
         app_name = input('\nEnter app name: ').lower()
