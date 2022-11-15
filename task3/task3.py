@@ -2,37 +2,36 @@ import os
 import csv
 import shutil
 
-# leer el csv y poner en listas su contenido
+# read csv y create list
 with open('students.csv') as csvfile:
-    students_file = csv.reader(csvfile,delimiter=' ')  # separa el csv en lista, separa los elementos d ela lista cuando hay espacio vacio
+    students_file = csv.reader(csvfile,delimiter=' ')  #separete elements in empty spaces
     list_students_names = []
     list_students_id = []
-    for row in students_file:  # split hace la lista separando cuando hay ,
-        student = '_'.join(row).lower().split(',')  # join junta todo en un str, a los elementos de la lista los separa con espacio vacio
-        list_students_names.append(student[0])
+    for row in students_file:
+        student = '_'.join(row).lower().split(',')   #join in one str, separate the elements whit '_'
+        list_students_names.append(student[0])       #split separete the elements when ','
         list_students_id.append(student[1])
 
-# eliminar primer valor
+# eliminate first value from the lists
 list_students_names.pop(0)
 list_students_id.pop(0)
 
-# crear carpetas
+# create files
 for name in list_students_names:
     if os.path.exists(name) == False:
         os.mkdir(name)
 
-# datos de rutas
+# paths
 origin = './data'
 destination_pdf = './tutorials'
 destination_directories = "./games"
 
-# lista con lo que contiene la carpeta
+# list whit the folder contect
 files = os.listdir(origin)
 
-# mover archivos
-for file in files:  # path.join une dos los argumentos separando por /
-    if os.path.isdir(
-            os.path.join(origin, file)):  # path.isdir pregunta si el argumento es una carpeta, tengo que darle una ruta
-        new_path = shutil.move(f"{origin}/{file}", destination_directories)  # (ruta del archivo , ruta destino)
+# move files
+for file in files:
+    if os.path.isdir(os.path.join(origin,file)):    #.isdir(path)
+        new_path = shutil.move(f"{origin}/{file}", destination_directories)
     elif os.path.isfile(os.path.join(origin, file)) and file.endswith('.pdf'):
         new_path = shutil.move(f"{origin}/{file}", destination_pdf)
